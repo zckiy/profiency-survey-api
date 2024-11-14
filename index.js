@@ -55,7 +55,7 @@ app.get('/api/survei/pertanyaanList/surveiId=:surveiID&prodiId=:prodiID', (req, 
     const sql = `SELECT tblpertanyaan.*, tblsurvei.kode as kodeSurvei, tblsurvei.judul 
                  FROM tblpertanyaan
                  LEFT JOIN tblsurvei ON tblpertanyaan.surveiID = tblsurvei.surveiID
-                 WHERE (tblpertanyaan.surveiID = ? AND tblpertanyaan.prodiID = ?) OR setAll = 1
+                 WHERE tblpertanyaan.surveiID = ? AND (tblpertanyaan.prodiID = ? OR setAll = 1)
                  ORDER BY tblpertanyaan.kodePertanyaan`;
 
     db.query(sql, [surveiID, prodiID], (err, results) => {
@@ -78,3 +78,25 @@ app.get('/api/survei/pertanyaanDetList/pertanyaanId=:pertanyaanID', (req, res) =
         res.json(results);
     });
 })
+
+app.post('/api/responden/insert', (req, res) => {
+    const { prodiID, nama, email, tipeRes, tahunLulusan } = req.body;
+
+    if (!prodiID || !nama || !email || !tipeRes) {
+        return res.status(400).json({ error: 'Semua data wajib diisi' });
+    }
+
+    const tahunDibuat = new Date().toISOString().slice(0, 19).replace('T', ' ');
+
+    const sql = `INSERT INTO tblresponden (prodiID, nama, email, tipeRes, tahunLulusan, tahunDibuat) VALUES (?, ?, ?, ?, ?, ?)`;
+    db.query(sql, [prodiID, nama, email, tipeRes, tahunLulusan, tahunDibuat], (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+
+        res.status(201).json({
+            message: 'Data berhasil disimpan',
+            data: results,
+        });
+    });
+});
