@@ -54,10 +54,11 @@ router.post('/insert-jawaban', (req, res) => {
     const jawabanArray = req.body;
     const tanggalDibuat = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
-    const sql = `INSERT INTO tbljawaban (respondenID, pertanyaanID, jawabanNUM, jawabanSTR, tanggalDibuat) VALUES ?`;
+    const sql = `INSERT INTO tbljawaban (respondenID, prodiID, pertanyaanID, jawabanNUM, jawabanSTR, tanggalDibuat) VALUES ?`;
 
     const values = jawabanArray.map(jawaban => [
         jawaban.respondenID,
+        jawaban.prodiID,
         jawaban.pertanyaanID,
         jawaban.jawabanNUM,
         jawaban.jawabanSTR,
@@ -86,7 +87,7 @@ router.post('/insert-jawabandet', (req, res) => {
 
     const tanggalDibuat = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
-    const sql = `INSERT INTO tbljawabandetail (pertanyaanDetID, respondenID, jawabanDet, tanggalDibuat) VALUES ?`;
+    const sql = `INSERT INTO tbljawabandetail (pertanyaanDetID, prodiID, respondenID, jawabanDet, tanggalDibuat) VALUES ?`;
     
     const values = jawabanDetArray.map(jawabanDet => {
         if (
@@ -100,6 +101,7 @@ router.post('/insert-jawabandet', (req, res) => {
 
         return [
             jawabanDet.pertanyaanDetID,
+            jawabanDet.prodiID,
             jawabanDet.respondenID,
             jawabanDet.jawabanDet,
             tanggalDibuat
