@@ -3,7 +3,11 @@ const router = express.Router();
 const db = require('./db');
 
 router.get('/list-prodi', (req, res) => {
-    const sql = `SELECT * FROM tblprodi`;
+    const sql = `
+        SELECT tblprodi.prodiID, tblprodi.namaProdi, tbljurusan.jurusanID, tbljurusan.namaJurusan
+        FROM tblprodi
+        LEFT JOIN tbljurusan ON tblprodi.jurusanID = tbljurusan.jurusanID
+    `;
     db.query(sql, (err, results) => {
         if (err) {
             return res.status(500).json({ error: err.message });
@@ -11,7 +15,7 @@ router.get('/list-prodi', (req, res) => {
         res.json(results);
     });
 });
-
+ 
 router.get('/list-survei', (req, res) => {
     const sql = `SELECT * FROM tblsurvei`;
     db.query(sql, (err, results) => {
@@ -64,7 +68,7 @@ router.post('/insert-jawaban', (req, res) => {
         jawaban.jawabanSTR,
         tanggalDibuat
     ]);
-    
+
     db.query(sql, [values], (err, results) => {
         if (err) {
             return res.status(500).json({ error: err.message });
@@ -88,7 +92,7 @@ router.post('/insert-jawabandet', (req, res) => {
     const tanggalDibuat = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
     const sql = `INSERT INTO tbljawabandetail (pertanyaanDetID, prodiID, respondenID, jawabanDet, tanggalDibuat) VALUES ?`;
-    
+
     const values = jawabanDetArray.map(jawabanDet => {
         if (
             typeof jawabanDet.pertanyaanDetID !== 'number' ||
