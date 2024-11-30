@@ -27,6 +27,7 @@ router.get('/data-diagram', async (req, res) => {
             }
 
             resultData[prodi.prodiID] = {
+                namaProdi: prodi.namaProdi,
                 kodePertanyaan,
                 datasets
             };
@@ -41,7 +42,7 @@ router.get('/data-diagram', async (req, res) => {
 
 // Fungsi untuk mendapatkan daftar prodi
 function getProdi() {
-    const query = `SELECT prodiID FROM tblprodi`;
+    const query = `SELECT prodiID, namaProdi FROM tblprodi`;
     return new Promise((resolve, reject) => {
         db.query(query, (err, results) => {
             if (err) {
