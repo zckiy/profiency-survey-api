@@ -5,8 +5,6 @@ const respondenRoutes = require('./respondenRoutes');
 const diagramRoutes = require('./diagramRoutes');
 const loginRoutes = require('./loginRoutes')
 
-
-
 const app = express();
 const PORT = 5000;
 
