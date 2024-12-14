@@ -49,4 +49,25 @@ router.post('/insert-detail', (req, res) => {
     });
 });
 
+router.delete('/delete-detail/:pertanyaanDetID', (req, res) => {
+    const { pertanyaanDetID } = req.params;
+
+    const sql = `DELETE FROM tblpertanyaandetail WHERE pertanyaanDetID = ?`;
+
+    db.query(sql, [pertanyaanDetID], (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+
+        if (results.affectedRows === 0) {
+            return res.status(404).json({ message: 'Detail pertanyaan tidak ditemukan' });
+        }
+
+        res.status(200).json({
+            message: 'Detail pertanyaan berhasil dihapus',
+            data: results.affectedRows
+        });
+    });
+});
+
 module.exports = router;
