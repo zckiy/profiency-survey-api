@@ -70,4 +70,39 @@ router.delete('/delete-detail/:pertanyaanDetID', (req, res) => {
     });
 });
 
+router.delete('/delete/:pertanyaanID', (req, res) => {
+    const { pertanyaanID } = req.params;
+
+    deleteDetail(pertanyaanID);
+
+    const sql = `DELETE FROM tblpertanyaan WHERE pertanyaanID = ?`;
+
+    db.query(sql, [pertanyaanID], (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+
+        if (results.affectedRows === 0) {
+            return res.status(404).json({ message: 'Pertanyaan tidak ditemukan' });
+        }
+
+        res.status(200).json({
+            message: 'Pertanyaan berhasil dihapus',
+            data: results.affectedRows
+        });
+    });
+});
+
+function deleteDetail(pertanyaanID) {
+    const query = `DELETE FROM tblpertanyaandetail WHERE pertanyaanID = ?`;
+    return new Promise((resolve, reject) => {
+        db.query(query, [pertanyaanID], (err, results) => {
+            if (err) {
+                return reject(err);
+            }
+            resolve(results);
+        });
+    });
+}
+
 module.exports = router;
