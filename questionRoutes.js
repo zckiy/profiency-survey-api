@@ -124,4 +124,30 @@ function queryDatabase(sql, params) {
     });
 }
 
+router.get('/last-detcode-byid/:pertanyaanID', async (req, res) => {
+    try {
+        const { pertanyaanID } = req.params;
+        
+        const sql = `SELECT kodePertanyaanDetail 
+                     FROM tblpertanyaandetail 
+                     WHERE pertanyaanID = ? 
+                     ORDER BY kodePertanyaanDetail DESC
+                     LIMIT 1;`;
+
+        const results = await queryDatabase(sql, [pertanyaanID]);
+
+        if (results.length > 0) {
+            res.status(200).json({
+                message: 'Kode Pertanyaan Detail berhasil diambil',
+                data: results[0].kodePertanyaanDetail
+            });
+        } else {
+            res.status(404).json({ message: 'Tidak ada detail pertanyaan ditemukan' });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
 module.exports = router;
