@@ -5,6 +5,7 @@ const respondenRoutes = require('./respondenRoutes');
 const diagramRoutes = require('./diagramRoutes');
 const loginRoutes = require('./loginRoutes');
 const questionRoutes = require('./questionRoutes');
+const captchaRoutes = require('./captchaRoutes');
 
 const app = express();
 const PORT = 5000;
@@ -17,6 +18,7 @@ app.use('/api/responden', respondenRoutes);
 app.use('/api/diagram', diagramRoutes);
 app.use('/api/login', loginRoutes)
 app.use('/api/question', questionRoutes)
+app.use('/api/captcha', captchaRoutes)
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
