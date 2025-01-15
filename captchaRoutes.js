@@ -6,10 +6,10 @@ const RECAPTCHA_SECRET_KEY = '6Lc4tawqAAAAALAz0-871kAZ4kGFzMoIIgwxIL85';
 
 // Endpoint untuk verifikasi CAPTCHA
 router.post('/verify-captcha', async (req, res) => {
-  const token = req.body.token; // Token dari frontend
+  const token = req.body.token;
 
-  if (!token) {
-    return res.status(400).json({ success: false, message: 'Token CAPTCHA tidak ditemukan.' });
+  if (!token || typeof token !== 'string' || token.trim().length < 10) {
+    return res.status(400).json({ success: false, message: 'Token CAPTCHA tidak valid.' });
   }
 
   try {
@@ -21,6 +21,7 @@ router.post('/verify-captcha', async (req, res) => {
           secret: RECAPTCHA_SECRET_KEY,
           response: token,
         },
+        timeout: 5000,
       }
     );
 
@@ -29,12 +30,17 @@ router.post('/verify-captcha', async (req, res) => {
     if (data.success) {
       return res.status(200).json({ success: true, message: 'CAPTCHA valid.' });
     } else {
-      return res.status(400).json({ success: false, message: 'CAPTCHA tidak valid.', errorCodes: data['error-codes'] });
+      return res.status(400).json({
+        success: false,
+        message: 'CAPTCHA tidak valid.',
+        errorCodes: data['error-codes'],
+      });
     }
   } catch (error) {
-    console.error('Error verifying CAPTCHA:', error);
-    return res.status(500).json({ success: false, message: 'Server error.' });
+    console.error('Error verifying CAPTCHA:', error.message);
+    return res.status(500).json({ success: false, message: 'Kesalahan server.' });
   }
 });
+
 
 module.exports = router;
